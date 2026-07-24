@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<!--
+  Interview Debrief report template.
+  HOW TO USE: copy this file, fill in every {{PLACEHOLDER}}, and replace the
+  demo section content with real analysis. Keep the <style> block as-is (it is
+  self-contained — no external CSS/JS/fonts/images). Reusable component snippets
+  are shown as HTML comments inside each section; copy and repeat them as needed.
+  Keep the sticky TOC (<nav class="toc">) links in sync with the section ids.
+  Write body copy in the user's language (default Chinese); keep transcript
+  quotes verbatim in their original language.
+-->
+<html lang="{{LANG|zh-CN}}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>面试分析报告 · {{COMPANY}} {{ROLE}} · {{CANDIDATE}}</title>
+<style>
+  :root{
+    --bg:#0b0e14; --panel:#141926; --panel2:#1a2131; --ink:#e9edf5; --muted:#9aa5bb;
+    --line:#232b3d; --line2:#2d3a55; --brand:#5b9dff; --brand2:#8f7ff8;
+    --good:#3ddc97; --warn:#f6b73c; --bad:#ff6b7a; --mid:#f0c14b;
+    --chip:#1b2233; --radius:16px; --maxw:1200px;
+    --shadow:0 1px 2px rgba(0,0,0,.35),0 12px 32px -16px rgba(0,0,0,.55);
+    --serif:"Georgia","Songti SC",serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;color:var(--ink);
+    background:
+      radial-gradient(1400px 500px at 15% -8%,rgba(91,157,255,.10),transparent 60%),
+      radial-gradient(1100px 420px at 90% -12%,rgba(143,127,248,.09),transparent 60%),
+      linear-gradient(180deg,#090c12,var(--bg) 340px);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    line-height:1.72;font-size:15.5px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  a{color:var(--brand);text-decoration:none}
+  ::selection{background:rgba(91,157,255,.30)}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .layout{display:grid;grid-template-columns:248px 1fr;gap:40px;align-items:start}
+  @media(max-width:900px){.layout{grid-template-columns:1fr}.toc{position:static!important;max-height:none!important}}
+
+  header.hero{padding:52px 0 30px;border-bottom:1px solid var(--line);margin-bottom:34px}
+  .kicker{color:var(--brand);font-weight:800;letter-spacing:.22em;text-transform:uppercase;font-size:11.5px}
+  h1{font-size:clamp(26px,3.6vw,34px);margin:10px 0 6px;line-height:1.18;font-weight:800;letter-spacing:-.01em}
+  .sub{color:var(--muted);font-size:15px}
+  .meta{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}
+  .pill{background:var(--chip);border:1px solid var(--line);border-radius:999px;padding:5px 14px;font-size:12.5px;color:var(--muted)}
+  .pill b{color:var(--ink);font-weight:650}
+
+  .toc{position:sticky;top:18px;background:linear-gradient(180deg,var(--panel),#121722);border:1px solid var(--line);border-radius:var(--radius);padding:16px 12px;max-height:calc(100vh - 36px);overflow:auto;box-shadow:var(--shadow)}
+  .toc::-webkit-scrollbar{width:4px}
+  .toc::-webkit-scrollbar-thumb{background:var(--line2);border-radius:4px}
+  .toc .tt{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);padding:4px 12px 10px}
+  .toc a{display:flex;gap:10px;align-items:baseline;color:var(--muted);padding:7px 12px;border-radius:10px;font-size:13.5px;transition:.16s;border-left:2px solid transparent}
+  .toc a:hover{background:var(--panel2);color:var(--ink)}
+  .toc a.active{background:linear-gradient(90deg,rgba(91,157,255,.14),rgba(91,157,255,.03));color:var(--ink);border-left-color:var(--brand)}
+  .toc a .n{color:var(--brand);font-variant-numeric:tabular-nums;font-size:11.5px;min-width:17px;font-weight:700;opacity:.85}
+  .toc .score{font-variant-numeric:tabular-nums;margin-left:auto;font-size:12px;color:var(--muted);font-weight:600}
+
+  section{margin:0 0 52px;scroll-margin-top:24px}
+  h2{font-size:22px;margin:0 0 6px;display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:-.01em}
+  h2 .idx{color:var(--brand);font-size:12.5px;font-weight:800;border:1px solid var(--line2);border-radius:9px;padding:3px 9px;background:linear-gradient(180deg,var(--panel2),var(--panel));font-variant-numeric:tabular-nums;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+  .lead{color:var(--muted);margin:0 0 20px;font-size:14.5px;max-width:72ch}
+  h3{font-size:16px;margin:24px 0 10px;font-weight:750}
+
+  .card{background:linear-gradient(180deg,var(--panel),#121722);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;margin:16px 0;box-shadow:var(--shadow)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:760px){.grid2{grid-template-columns:1fr}}
+
+  .verdictbox{display:grid;grid-template-columns:184px 1fr;gap:30px;align-items:center}
+  @media(max-width:620px){.verdictbox{grid-template-columns:1fr;text-align:center}}
+  .gauge{position:relative;width:180px;height:180px;margin:0 auto}
+  .gauge svg{transform:rotate(-90deg)}
+  .gauge .val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .gauge .val .big{font-size:46px;font-weight:850;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .gauge .val .small{color:var(--muted);font-size:11.5px;margin-top:5px;letter-spacing:.06em}
+  .tag{display:inline-block;padding:5px 14px;border-radius:999px;font-weight:750;font-size:12.5px;letter-spacing:.01em}
+  .tag.borderline{background:rgba(240,193,75,.13);color:#f3ca67;border:1px solid rgba(240,193,75,.38)}
+  .tag.strong{background:rgba(61,220,151,.13);color:var(--good);border:1px solid rgba(61,220,151,.38)}
+  .tag.below{background:rgba(255,107,122,.13);color:var(--bad);border:1px solid rgba(255,107,122,.38)}
+
+  .bars{margin-top:8px}
+  .bar{display:grid;grid-template-columns:216px 1fr 48px;gap:16px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+  .bar:first-child{border-top:0}
+  .bar .lab{font-size:14px;font-weight:600}
+  .bar .lab small{display:block;color:var(--muted);font-size:11px;font-weight:400;letter-spacing:.02em}
+  .track{height:8px;background:var(--panel2);border-radius:999px;overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,0,0,.4)}
+  .fill{height:100%;border-radius:999px}
+  .bar .sc{text-align:right;font-variant-numeric:tabular-nums;font-weight:800;font-size:15px}
+  .s5{background:linear-gradient(90deg,#22b57e,#3ddc97)}
+  .s4{background:linear-gradient(90deg,#59c26e,#93d95f)}
+  .s3{background:linear-gradient(90deg,#e0ab3a,#f6b73c)}
+  .s2{background:linear-gradient(90deg,#f19a3e,#fb7d55)}
+  .s1{background:linear-gradient(90deg,#f25f6e,#fb8a63)}
+
+  ul.clean{margin:6px 0;padding-left:18px}
+  ul.clean li{margin:7px 0}
+  ul.clean li::marker{color:var(--brand)}
+
+  .quote{border-left:3px solid var(--brand);background:var(--panel2);padding:10px 15px;border-radius:0 10px 10px 0;margin:12px 0;font-size:13.5px;color:#cbd3e2}
+  .quote .ts{color:var(--brand);font-variant-numeric:tabular-nums;font-size:12px;font-weight:700;margin-right:9px}
+  .quote.bad{border-left-color:var(--bad)}
+  .quote.good{border-left-color:var(--good)}
+  .en{font-style:italic;color:#e0e6f2;font-family:var(--serif);letter-spacing:.005em}
+
+  .dimhead{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .dimhead .sc{font-size:28px;font-weight:850;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .badge{font-size:11.5px;padding:3px 10px;border-radius:999px;border:1px solid var(--line);font-weight:650}
+  .b-good{color:var(--good);border-color:rgba(61,220,151,.42);background:rgba(61,220,151,.09)}
+  .b-mid{color:var(--mid);border-color:rgba(240,193,75,.42);background:rgba(240,193,75,.09)}
+  .b-bad{color:var(--bad);border-color:rgba(255,107,122,.42);background:rgba(255,107,122,.09)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+  @media(max-width:760px){.two{grid-template-columns:1fr}}
+  .mini{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .mini h4{margin:0 0 8px;font-size:12.5px;letter-spacing:.04em;font-weight:750}
+  .mini.win{border-top:2px solid rgba(61,220,151,.5)}
+  .mini.gap{border-top:2px solid rgba(255,107,122,.5)}
+  .mini.win h4{color:var(--good)} .mini.gap h4{color:var(--bad)}
+  .fix{background:linear-gradient(90deg,rgba(91,157,255,.12),rgba(91,157,255,.02));border:1px solid rgba(91,157,255,.32);border-radius:12px;padding:12px 15px;margin-top:14px;font-size:13.5px}
+  .fix b{color:var(--brand)}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  @media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stat{background:linear-gradient(180deg,var(--panel),#121722);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow)}
+  .stat .num{font-size:29px;font-weight:850;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .stat .num.warn{color:var(--warn)} .stat .num.bad{color:var(--bad)} .stat .num.good{color:var(--good)}
+  .stat .cap{color:var(--muted);font-size:12px;margin-top:3px}
+
+  .tl{position:relative;margin:10px 0 0;padding-left:22px}
+  .tl::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:2px;background:linear-gradient(180deg,var(--line2),var(--line))}
+  .ev{position:relative;padding:9px 0 9px 16px}
+  .ev::before{content:"";position:absolute;left:-21px;top:15px;width:11px;height:11px;border-radius:50%;background:var(--brand);border:2.5px solid var(--bg);box-shadow:0 0 0 2px rgba(91,157,255,.25)}
+  .ev.warn::before{background:var(--warn);box-shadow:0 0 0 2px rgba(246,183,60,.22)}
+  .ev.bad::before{background:var(--bad);box-shadow:0 0 0 2px rgba(255,107,122,.22)}
+  .ev.good::before{background:var(--good);box-shadow:0 0 0 2px rgba(61,220,151,.22)}
+  .ev .t{font-variant-numeric:tabular-nums;color:var(--brand);font-size:12.5px;font-weight:750}
+  .ev .h{font-weight:650;margin:1px 0 2px}
+  .ev .d{color:var(--muted);font-size:13px}
+
+  .seg{display:grid;grid-template-columns:118px 1fr;gap:18px;padding:20px 2px;border-top:1px solid var(--line)}
+  .seg:first-child{border-top:0}
+  .seg-t{font-variant-numeric:tabular-nums;font-weight:800;color:var(--brand);font-size:13.5px;align-self:start;position:sticky;top:16px;line-height:1.5}
+  .seg-topic{font-weight:750;font-size:15.5px;margin-bottom:10px;display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+  .seg-tag{font-size:10.5px;padding:2.5px 10px;border-radius:999px;border:1px solid var(--line);font-weight:700;letter-spacing:.03em}
+  .seg-tag.good{color:var(--good);border-color:rgba(61,220,151,.42);background:rgba(61,220,151,.09)}
+  .seg-tag.mid{color:var(--mid);border-color:rgba(240,193,75,.42);background:rgba(240,193,75,.09)}
+  .seg-tag.bad{color:var(--bad);border-color:rgba(255,107,122,.42);background:rgba(255,107,122,.09)}
+  .seg-row{font-size:13.5px;margin:7px 0;line-height:1.7}
+  .seg-row .k{font-weight:750}
+  .seg-row.what .k{color:var(--muted)}
+  .seg-row.prob .k{color:var(--bad)}
+  .seg-row.fix .k{color:var(--brand)}
+  .seg-row.q .k{color:var(--brand2)}
+  .seg-row.q{background:rgba(143,127,248,.08);border:1px solid rgba(143,127,248,.22);border-radius:10px;padding:8px 12px;margin-left:0}
+  .seg-row.a .k{color:var(--good)}
+  .seg-row.a{background:rgba(61,220,151,.05);border-radius:10px;padding:8px 12px;border:1px solid rgba(61,220,151,.14)}
+  .seg-row.fix{background:linear-gradient(90deg,rgba(91,157,255,.10),transparent);border-radius:10px;padding:7px 11px;margin-left:-2px}
+  .seg-model{margin-top:12px;border:1px solid rgba(143,127,248,.42);background:
+    linear-gradient(120deg,rgba(143,127,248,.13),rgba(91,157,255,.05));border-radius:12px;padding:14px 16px;position:relative;overflow:hidden}
+  .seg-model::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--brand2),var(--brand))}
+  .seg-model h5{margin:0 0 8px;font-size:12.5px;color:#b3a6ff;letter-spacing:.03em;font-weight:800}
+  .seg-model p{margin:0;font-size:13.5px;color:#e8ebf5;font-style:italic;line-height:1.8;font-family:var(--serif)}
+  @media(max-width:640px){.seg{grid-template-columns:1fr;gap:8px}.seg-t{position:static}}
+
+  ol.steps{counter-reset:s;list-style:none;padding:0;margin:8px 0}
+  ol.steps li{counter-increment:s;position:relative;padding:11px 0 11px 42px;border-top:1px solid var(--line)}
+  ol.steps li:first-child{border-top:0}
+  ol.steps li::before{content:counter(s);position:absolute;left:0;top:11px;width:27px;height:27px;border-radius:9px;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line2);color:var(--brand);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:13px}
+  ol.steps li b{color:var(--ink)}
+  .chk{list-style:none;padding:0;margin:8px 0}
+  .chk li{padding:10px 0 10px 32px;position:relative;border-top:1px dashed var(--line)}
+  .chk li:first-child{border-top:0}
+  .chk li::before{content:"";position:absolute;left:2px;top:15px;width:15px;height:15px;border-radius:5px;border:2px solid var(--brand);background:rgba(91,157,255,.08)}
+  .chk li b{color:var(--ink)}
+
+  .q{background:linear-gradient(180deg,var(--panel),#121722);border:1px solid var(--line);border-left:3px solid var(--brand2);border-radius:0 12px 12px 0;padding:12px 16px;margin:10px 0;box-shadow:var(--shadow)}
+  .q .why{color:var(--muted);font-size:12.5px;margin-top:4px}
+  .callout{background:linear-gradient(120deg,rgba(143,127,248,.13),rgba(91,157,255,.07));border:1px solid rgba(143,127,248,.32);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow)}
+  .callout h3{margin-top:0}
+  footer{border-top:1px solid var(--line);margin-top:36px;padding:24px 0 64px;color:var(--muted);font-size:12.5px;line-height:1.8}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin-top:10px}
+  .legend span::before{content:"●";margin-right:5px}
+  .dot-good::before{color:var(--good)} .dot-mid::before{color:var(--mid)} .dot-bad::before{color:var(--bad)}
+  hr.soft{border:0;border-top:1px solid var(--line);margin:20px 0}
+  .tip{font-size:12.5px;color:var(--muted)}
+  @media print{
+    body{background:#fff;color:#111}
+    .toc{display:none}
+    .layout{grid-template-columns:1fr}
+    .card,.stat,.q,.callout{box-shadow:none;border-color:#ddd;background:#fff}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kicker">面试复盘报告 · Interview Debrief</div>
+    <h1>{{COMPANY}} · {{ROLE}} {{ROUND_LABEL}}</h1>
+    <div class="sub">候选人：{{CANDIDATE}} ｜ 面试官：{{INTERVIEWER_DESC}}</div>
+    <div class="meta">
+      <span class="pill">📅 面试日期 <b>{{DATE}}</b></span>
+      <span class="pill">⏱ 时长 <b>{{DURATION}}</b></span>
+      <span class="pill">🏢 公司 <b>{{COMPANY}}</b></span>
+      <span class="pill">🎯 岗位 <b>{{ROLE}}</b></span>
+      <span class="pill">📄 {{JD_RESUME_STATUS}}</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap"><div class="layout">
+
+  <!-- ============ STICKY TOC — keep in sync with section ids & scores ============ -->
+  <nav class="toc">
+    <div class="tt">目录 · Index</div>
+    <a href="#overview"><span class="n">00</span>总览与结论</a>
+    <a href="#scorecard"><span class="n">01</span>八维评分卡<span class="score">{{OVERALL}}</span></a>
+    <a href="#d1"><span class="n">02</span>技术匹配度<span class="score">{{S1}}</span></a>
+    <a href="#d2"><span class="n">03</span>技术深度<span class="score">{{S2}}</span></a>
+    <a href="#d3"><span class="n">04</span>表达结构<span class="score">{{S3}}</span></a>
+    <a href="#d4"><span class="n">05</span>业务影响<span class="score">{{S4}}</span></a>
+    <a href="#d5"><span class="n">06</span>协作 / Ownership<span class="score">{{S5}}</span></a>
+    <a href="#d6"><span class="n">07</span>自我认知 / 成长<span class="score">{{S6}}</span></a>
+    <a href="#d7"><span class="n">08</span>动机 / 文化匹配<span class="score">{{S7}}</span></a>
+    <a href="#d8"><span class="n">09</span>语言 / 沟通<span class="score">{{S8}}</span></a>
+    <a href="#fluency"><span class="n">10</span>吞吐词 / 流畅度</a>
+    <a href="#timeline"><span class="n">11</span>时间线速览</a>
+    <a href="#segments"><span class="n">12</span>逐段精读（跟音频）</a>
+    <a href="#industry"><span class="n">13</span>行业视角</a>
+    <a href="#prep"><span class="n">14</span>下次「准备」清单</a>
+    <a href="#tactics"><span class="n">15</span>下次「临场」战术</a>
+    <a href="#questions"><span class="n">16</span>反问银行</a>
+    <a href="#verdict"><span class="n">17</span>一句话总结</a>
+  </nav>
+
+  <main>
+
+  <!-- ============ 00 OVERVIEW ============ -->
+  <section id="overview">
+    <h2><span class="idx">00</span>总览与结论</h2>
+    <p class="lead">{{TLDR_LEAD}}</p>
+    <div class="card">
+      <div class="verdictbox">
+        <div class="gauge">
+          <svg width="180" height="180" viewBox="0 0 180 180">
+            <circle cx="90" cy="90" r="78" fill="none" stroke="#242a34" stroke-width="16"/>
+            <!-- dasharray = (OVERALL/5)*490 , 490 ≈ full circumference -->
+            <circle cx="90" cy="90" r="78" fill="none" stroke="url(#g)" stroke-width="16"
+              stroke-linecap="round" stroke-dasharray="{{GAUGE_DASH}} 490"/>
+            <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#f5a623"/><stop offset="1" stop-color="#f0c14b"/>
+            </linearGradient></defs>
+          </svg>
+          <div class="val"><div class="big">{{OVERALL}}</div><div class="small">综合 / 5.0</div></div>
+        </div>
+        <div>
+          <span class="tag {{VERDICT_CLASS}}">评级：{{VERDICT_TAG}}</span>
+          <p style="margin:12px 0 6px">{{VERDICT_PARAGRAPH}}</p>
+          <ul class="clean">
+            <li>✅ <b>最强</b>：{{STRONGEST_MOMENT}}</li>
+            <li>⚠️ <b>最伤</b>：{{COSTLIEST_MOMENT}}</li>
+            <li>🔑 <b>关键主题</b>：{{KEY_THEME}}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="num">{{OVERALL}}</div><div class="cap">综合评分 / 5</div></div>
+      <div class="stat"><div class="num warn">{{FILLER_TOTAL}}</div><div class="cap">um/uh/hmm 迟疑词（全场）</div></div>
+      <div class="stat"><div class="num">{{STAT3_NUM}}</div><div class="cap">{{STAT3_CAP}}</div></div>
+      <div class="stat"><div class="num bad">{{STAT4_NUM}}</div><div class="cap">{{STAT4_CAP}}</div></div>
+    </div>
+  </section>
+
+  <!-- ============ 01 SCORECARD ============ -->
+  <section id="scorecard">
+    <h2><span class="idx">01</span>八维评分卡</h2>
+    <p class="lead">每项 1–5 分。<span style="color:var(--good)">绿≥3.5</span> · <span style="color:var(--mid)">黄 3.0</span> · <span style="color:var(--bad)">红≤2.5</span>。</p>
+    <div class="card bars">
+      <!-- SNIPPET score bar: set fill class s1..s5 and width = score/5*100% -->
+      <div class="bar"><div class="lab">技术匹配度<small>Tech Match</small></div><div class="track"><div class="fill s{{S1_CLASS}}" style="width:{{S1_PCT}}%"></div></div><div class="sc">{{S1}}</div></div>
+      <div class="bar"><div class="lab">技术深度与问题解决<small>Depth &amp; Problem Solving</small></div><div class="track"><div class="fill s{{S2_CLASS}}" style="width:{{S2_PCT}}%"></div></div><div class="sc">{{S2}}</div></div>
+      <div class="bar"><div class="lab">表达结构与故事性<small>Structure &amp; Narrative</small></div><div class="track"><div class="fill s{{S3_CLASS}}" style="width:{{S3_PCT}}%"></div></div><div class="sc">{{S3}}</div></div>
+      <div class="bar"><div class="lab">业务结果与影响<small>Impact</small></div><div class="track"><div class="fill s{{S4_CLASS}}" style="width:{{S4_PCT}}%"></div></div><div class="sc">{{S4}}</div></div>
+      <div class="bar"><div class="lab">协作与 Ownership<small>Collaboration &amp; Ownership</small></div><div class="track"><div class="fill s{{S5_CLASS}}" style="width:{{S5_PCT}}%"></div></div><div class="sc">{{S5}}</div></div>
+      <div class="bar"><div class="lab">自我认知与学习成长<small>Self-awareness &amp; Growth</small></div><div class="track"><div class="fill s{{S6_CLASS}}" style="width:{{S6_PCT}}%"></div></div><div class="sc">{{S6}}</div></div>
+      <div class="bar"><div class="lab">动机与文化匹配<small>Motivation &amp; Fit</small></div><div class="track"><div class="fill s{{S7_CLASS}}" style="width:{{S7_PCT}}%"></div></div><div class="sc">{{S7}}</div></div>
+      <div class="bar"><div class="lab">语言与沟通<small>Communication</small></div><div class="track"><div class="fill s{{S8_CLASS}}" style="width:{{S8_PCT}}%"></div></div><div class="sc">{{S8}}</div></div>
+    </div>
+    <p class="tip">{{SCORECARD_PATTERN_NOTE}}</p>
+  </section>
+
+  <!-- ============ 02–09 PER-DIMENSION (repeat this card for d1..d8) ============ -->
+  <section id="dimensions">
+    <!-- SNIPPET dimension card. badge classes: b-good / b-mid / b-bad -->
+    <div id="d1"></div>
+    <h2><span class="idx">02</span>技术匹配度 · Tech Match</h2>
+    <div class="card">
+      <div class="dimhead"><span class="sc">{{S1}}</span><span class="badge {{S1_BADGE}}">{{S1_BADGE_TEXT}}</span>
+        <span class="lead" style="margin:0">{{S1_SUMMARY}}</span></div>
+      <div class="two">
+        <div class="mini win"><h4>✅ 做得好</h4><ul class="clean">{{S1_WINS}}</ul></div>
+        <div class="mini gap"><h4>⚠️ 掉分点</h4><ul class="clean">{{S1_GAPS}}</ul></div>
+      </div>
+      <div class="quote bad"><span class="ts">{{S1_QUOTE_TS}}</span><span class="en">{{S1_QUOTE}}</span></div>
+      <div class="fix"><b>下次这样修：</b>{{S1_FIX}}</div>
+    </div>
+
+    <!-- ...repeat for d2 (#d2, idx 03) through d8 (#d8, idx 09).
+         Use quote class "good" for a positive exemplar quote, "bad" for a failure. -->
+  </section>
+
+  <!-- ============ 10 FLUENCY ============ -->
+  <section id="fluency">
+    <h2><span class="idx">10</span>吞吐词 / 流畅度分析</h2>
+    <p class="lead">{{FLUENCY_LEAD}}</p>
+    <div class="stats">
+      <!-- SNIPPET stat tile — fill from filler_stats.py output -->
+      <div class="stat"><div class="num warn">{{UM}}</div><div class="cap">“um”</div></div>
+      <div class="stat"><div class="num warn">{{UH}}</div><div class="cap">“uh”</div></div>
+      <div class="stat"><div class="num">{{YOU_KNOW}}</div><div class="cap">“you know”</div></div>
+      <div class="stat"><div class="num">{{YEAH}}</div><div class="cap">“yeah”</div></div>
+      <div class="stat"><div class="num bad">{{STUT_II}}</div><div class="cap">“I I”（结巴）</div></div>
+      <div class="stat"><div class="num bad">{{STUT_THE}}</div><div class="cap">“the the”（结巴）</div></div>
+      <div class="stat"><div class="num">{{HMM}}</div><div class="cap">“hmm”</div></div>
+      <div class="stat"><div class="num warn">{{AND_STARTS}}</div><div class="cap">以 “and” 起句</div></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>可量化的小目标（下次面试）</h3>
+      <ul class="clean">{{FLUENCY_TARGETS}}</ul>
+      <p class="tip">{{FLUENCY_PRACTICE_TIP}}</p>
+    </div>
+  </section>
+
+  <!-- ============ 11 TIMELINE ============ -->
+  <section id="timeline">
+    <h2><span class="idx">11</span>时间线与关键时刻</h2>
+    <p class="lead"><span class="legend"><span class="dot-good">高光</span><span class="dot-mid">中性/机会</span><span class="dot-bad">失分</span></span></p>
+    <div class="tl">
+      <!-- SNIPPET timeline event — class good / warn / bad on .ev -->
+      {{TIMELINE_EVENTS}}
+      <!-- e.g. <div class="ev good"><div class="t">34:47–41:00</div><div class="h">最佳故事</div><div class="d">...</div></div> -->
+    </div>
+  </section>
+
+  <!-- ============ 12 SEGMENT-BY-SEGMENT (跟音频逐段, REQUIRED) ============ -->
+  <section id="segments">
+    <h2><span class="idx">12</span>逐段精读（对着音频看）</h2>
+    <p class="lead">打开录音，按左侧时间戳边听边看。每段：<b style="color:var(--muted)">发生了什么</b> / <b style="color:var(--bad)">问题在哪</b> / <b style="color:var(--brand)">下次怎么提高</b>。
+      <span class="legend"><span class="dot-good">高光</span><span class="dot-mid">中性/机会</span><span class="dot-bad">失分</span></span></p>
+    <div class="card">
+      <!-- SNIPPET segment — cover the WHOLE interview (15-20 segments for 40 min),
+           INCLUDING back-and-forth clarification loops. Show 面试官原问 + 我的回答·重点
+           so the user can recall the moment. Add a 🎯 seg-model box (≈60s, in the
+           language the candidate speaks) on every heavy-loss / high-stakes segment. -->
+      {{SEGMENTS}}
+      <!--
+      <div class="seg"><div class="seg-t">MM:SS–MM:SS</div><div>
+        <div class="seg-topic">话题标题 <span class="seg-tag bad">失分</span></div>
+        <div class="seg-row q"><span class="k">面试官问：</span>「...」（garbled→标注 复原）</div>
+        <div class="seg-row a"><span class="k">我答·重点：</span>...含 <span class="en">short verbatim snippet</span></div>
+        <div class="seg-row prob"><span class="k">问题：</span>...</div>
+        <div class="seg-row fix"><span class="k">提高：</span>...</div>
+        <div class="seg-model"><h5>🎯 60秒范例回答（面试专家版，可直接照着练）</h5>
+          <p>"Answer-first model response, ~110–150 words, in the language the candidate will speak."</p></div>
+      </div></div>
+      -->
+    </div>
+  </section>
+
+  <!-- ============ 13 INDUSTRY PERSPECTIVE ============ -->
+  <section id="industry">
+    <h2><span class="idx">13</span>行业视角（我的观点）</h2>
+    <div class="callout"><h3>{{INDUSTRY_HEADLINE}}</h3>{{INDUSTRY_BODY}}</div>
+    <div class="grid2" style="margin-top:16px">
+      <div class="card"><h3>{{INDUSTRY_CARD1_TITLE}}</h3>{{INDUSTRY_CARD1_BODY}}</div>
+      <div class="card"><h3>{{INDUSTRY_CARD2_TITLE}}</h3>{{INDUSTRY_CARD2_BODY}}</div>
+    </div>
+  </section>
+
+  <!-- ============ 13 PREPARE NEXT TIME ============ -->
+  <section id="prep">
+    <h2><span class="idx">14</span>下次「准备」清单（面试前）</h2>
+    <p class="lead">{{PREP_LEAD}}</p>
+    <div class="card">
+      <h3>A. 故事库：5 个可复用故事（STAR-L）</h3>
+      <ol class="steps">{{STORY_BANK}}</ol>
+      <p class="tip">每张卡片：Headline（张口第一句）｜背景 1 句｜我做了什么 2–3 句｜结果（带数字）｜反思 1 句。</p>
+    </div>
+    <div class="card">
+      <h3>B. 量化战绩表——面试前背熟</h3>
+      <ul class="clean">{{QUANTIFIED_WINS}}</ul>
+      <p class="tip">规则：任何「你做过什么」的回答，至少甩 1 个数字。</p>
+    </div>
+    <div class="card">
+      <h3>C. 公司功课：把「为什么 {{COMPANY}}」写死成 3 句</h3>
+      <ul class="clean">{{WHY_COMPANY}}</ul>
+    </div>
+  </section>
+
+  <!-- ============ 14 SAY NEXT TIME ============ -->
+  <section id="tactics">
+    <h2><span class="idx">15</span>下次「临场」战术（面试中）</h2>
+    <div class="grid2">{{TACTICS_CARDS}}
+      <!-- SNIPPET tactic card:
+      <div class="card"><h3>标题</h3><p>说明</p><div class="quote good">示范句</div></div> -->
+    </div>
+  </section>
+
+  <!-- ============ 15 REVERSE QUESTIONS ============ -->
+  <section id="questions">
+    <h2><span class="idx">16</span>反问银行 · {{COMPANY}} 定制</h2>
+    <p class="lead">高信号反问 = 展示你关心「如何在这里做成事」。挑 3–4 个问。</p>
+    {{REVERSE_QUESTIONS}}
+    <!-- SNIPPET: <div class="q">问题<div class="why">→ 为什么这个问题好</div></div> -->
+  </section>
+
+  <!-- ============ 16 VERDICT ============ -->
+  <section id="verdict">
+    <h2><span class="idx">17</span>一句话总结</h2>
+    <div class="callout">
+      <p style="font-size:16px;margin:0 0 10px"><b>{{VERDICT_ONELINER}}</b></p>
+      <p style="margin:0">{{VERDICT_BODY}}</p>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>本次三条最高优先级 action</h3>
+      <ul class="chk">{{TOP3_ACTIONS}}</ul>
+    </div>
+  </section>
+
+  <footer>
+    <div>报告生成：Claude · interview-analysis Skill ｜ 数据来源：{{SOURCE_FILES}}。</div>
+    <div>评分为基于转录文本的主观评估，仅供自我提升参考；迟疑词统计为全场文本计数（含面试官），趋势可信、绝对值可能略高于候选人个人实际。</div>
+  </footer>
+
+  </main>
+</div></div>
+<script>
+(function(){
+  var links=[].slice.call(document.querySelectorAll('.toc a'));
+  var pairs=links.map(function(a){var id=a.getAttribute('href');var s=id&&id[0]==='#'?document.querySelector(id):null;return s?[s,a]:null;}).filter(Boolean);
+  if(!('IntersectionObserver' in window)||!pairs.length)return;
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(e.isIntersecting){
+        links.forEach(function(l){l.classList.remove('active')});
+        for(var i=0;i<pairs.length;i++){if(pairs[i][0]===e.target){pairs[i][1].classList.add('active');break;}}
+      }
+    });
+  },{rootMargin:'-8% 0px -78% 0px'});
+  pairs.forEach(function(p){io.observe(p[0])});
+})();
+</script>
+</body>
+</html>
