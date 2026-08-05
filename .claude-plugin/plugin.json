@@ -1,0 +1,6 @@
+{
+  "name": "interview-analysis",
+  "description": "把面试录音转写成一份带评分的 HTML 复盘报告：八维评分卡、口头语逐词统计、逐段精读、下次怎么说。中英双语，面向在新西兰求职的华人候选人。",
+  "author": { "name": "Gabriel Chen" },
+  "homepage": "https://github.com/GabrielPower1969/InterviewAnalysis"
+}
