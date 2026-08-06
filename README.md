@@ -26,6 +26,15 @@ A single self-contained HTML report (dark, responsive, no external assets) with 
 | 14–16 | Prepare / tactics / reverse questions | Story bank (STAR-L), quantified-wins table, in-the-moment tactics, tailored questions to ask back |
 | 17 | One-line verdict | Top-3 priority actions |
 
+### 🎧 Audio-synced playback (when you supply the recording)
+
+If you hand the skill the audio/video alongside the transcript, the report ships wired to it:
+
+- **Every timestamp becomes a ▶ play button** — click any moment in the timeline, segment guide, or a quoted line and the built-in player jumps straight there. Reading "you hedged here" is one thing; hearing it is another.
+- **A live caption track with an on/off toggle** follows the audio as it plays, so you can read and listen at once. Captions are embedded in the HTML, so it all works offline by double-clicking the file.
+- Output is a **folder** holding the recording, the transcript, and the report together — share the folder and everything keeps working.
+
+
 ## Inputs
 
 | Input | Required? | Notes |
@@ -40,7 +49,7 @@ A single self-contained HTML report (dark, responsive, no external assets) with 
 
 ```bash
 git clone https://github.com/GabrielPower1969/InterviewAnalysis.git
-cp -r InterviewAnalysis/interview-analysis ~/.claude/skills/
+cp -r InterviewAnalysis/skills/interview-analysis ~/.claude/skills/
 ```
 
 Then in any Claude Code session, just share your CV + transcript (or audio) and say **"analyze this interview"** — the skill triggers automatically. Or invoke explicitly: `/interview-analysis`.
@@ -51,7 +60,7 @@ Add a project rule pointing at the skill instructions (Cursor reads `AGENTS.md` 
 
 ```
 Settings → Rules → Add rule → "For interview analysis tasks, follow the
-instructions in interview-analysis/SKILL.md of this repo."
+instructions in skills/interview-analysis/SKILL.md of this repo."
 ```
 
 ### OpenAI Codex CLI
@@ -67,11 +76,13 @@ Codex reads the repo's `AGENTS.md` automatically. Clone the repo, put your CV / 
 ## Repository layout
 
 ```
-interview-analysis/
+skills/interview-analysis/
 ├── SKILL.md                     # The skill: workflow, inputs, report structure
 ├── references/rubric.md         # 8-dimension scoring rubric (1–5 levels, weights)
-├── assets/report_template.html  # Self-contained HTML report template
-└── scripts/filler_stats.py      # Offline filler/disfluency counter (srt/vtt/txt)
+├── assets/report_template.html  # Self-contained HTML report template (+ audio player & captions)
+└── scripts/
+    ├── filler_stats.py          # Offline filler/disfluency counter (srt/vtt/txt)
+    └── srt_to_cues.py           # Transcript -> inline caption cues for the report
 ```
 
 ## License
@@ -104,6 +115,15 @@ MIT — see [LICENSE](LICENSE).
 | 14–16 | 备战清单 / 临场战术 / 反问银行 | STAR-L 故事库、量化战绩表、临场行为修正、定制反问 |
 | 17 | 一句话总结 | 三条最高优先级行动 |
 
+### 🎧 音频联动（提供录音时自动启用）
+
+把录音和转录一起交给技能，报告会直接和音频挂上钩：
+
+- **每个时间戳都是一个 ▶ 播放按钮**——时间线、逐段精读、引用原话，点哪里就从哪里开始播。看到「你这里犹豫了」和亲耳听到，感受完全不同。
+- **实时字幕 + 开关**，跟着音频滚动，可边听边读；字幕内嵌在 HTML 里，双击打开即可离线使用。
+- 输出是一个**文件夹**，录音、转录、报告三件套放在一起——整个文件夹分享出去，功能照常。
+
+
 ## 输入
 
 | 输入 | 是否必需 | 说明 |
@@ -118,7 +138,7 @@ MIT — see [LICENSE](LICENSE).
 
 ```bash
 git clone https://github.com/GabrielPower1969/InterviewAnalysis.git
-cp -r InterviewAnalysis/interview-analysis ~/.claude/skills/
+cp -r InterviewAnalysis/skills/interview-analysis ~/.claude/skills/
 ```
 
 之后在任意 Claude Code 会话中，把简历 + 转录（或音频）发给它，说一句**「分析这个面试」**即可自动触发；也可以显式调用 `/interview-analysis`。
@@ -129,7 +149,7 @@ cp -r InterviewAnalysis/interview-analysis ~/.claude/skills/
 
 ```
 设置 → Rules → 新建规则 → 「面试分析任务请遵循本仓库
-interview-analysis/SKILL.md 中的说明。」
+skills/interview-analysis/SKILL.md 中的说明。」
 ```
 
 ### OpenAI Codex CLI

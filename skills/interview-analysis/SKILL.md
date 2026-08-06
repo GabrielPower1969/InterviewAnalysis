@@ -90,9 +90,39 @@ the report — use the candidate's name only.
    sticky table-of-contents index. Fill in every section. See "Report structure"
    below for the required sections.
 
-7. **Save & deliver.** Save next to the transcript with a descriptive name:
+7. **Wire up audio sync when you have the media file** (see below). Skip when
+   the user only supplied a transcript.
+
+8. **Save & deliver.** Save next to the transcript with a descriptive name:
    `面试分析报告_<Company>_<Role>_<YYYY-MM-DD>.html` (or English equivalent).
-   Then surface it to the user (open in the browser pane / send the file).
+   When audio sync is on, deliver a **folder** holding all three files —
+   the media, the transcript, and the report — because the player uses a
+   relative path. Then surface it to the user (open in the browser pane / send
+   the file).
+
+## 🎧 Audio sync + captions (when a media file is available)
+
+Reviewing a debrief is far more useful when the user can hear the moment being
+critiqued, so whenever the interview audio/video exists, ship the report wired
+to it. The template already carries the whole mechanism; you supply three things:
+
+1. **Play buttons.** Render every timestamp in the report as
+   `<button class="pb" data-t="518">08:38</button>` — `data-t` is the position
+   in **seconds**. Clicking seeks the player and starts playback. Do this for
+   timeline entries, segment ranges, quotes, and any timestamp cited in the
+   dimension write-ups; that's what makes the report navigable by ear.
+2. **The caption track.** Run
+   `python3 scripts/srt_to_cues.py <transcript.srt> --stats` and paste the JSON
+   into the `{{CUES_JSON}}` placeholder. It is embedded inline rather than
+   fetched because browsers block `fetch()` on `file://`, and users open these
+   reports by double-clicking. A toggle in the player bar turns the live
+   captions on/off and remembers the choice.
+3. **`{{AUDIO_FILENAME}}`** — the media file's name, referenced relatively, so
+   keep the report in the same folder as the media.
+
+Copy the media and transcript next to the report so the folder is
+self-contained and shareable as a unit. If there is no media file, delete the
+audio-sync block from the template and render timestamps as plain text.
 
 ## Report structure (required sections, in this order)
 
@@ -200,6 +230,9 @@ representative sample yourself and say it's an estimate.
   section. Read this before scoring.
 - `assets/report_template.html` — the self-contained HTML skeleton (all CSS
   included) with `{{PLACEHOLDER}}` markers and reusable component snippets
-  (score bar, dimension card, timeline event, stat tile, reverse-question).
+  (score bar, dimension card, timeline event, stat tile, reverse-question,
+  and the optional audio-player + caption block).
   Copy it and fill it in; don't hand-roll CSS.
 - `scripts/filler_stats.py` — disfluency counter for SRT/VTT/text transcripts.
+- `scripts/srt_to_cues.py` — converts a transcript into the inline cue array
+  that powers the report's live captions.
