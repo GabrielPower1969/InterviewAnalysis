@@ -120,6 +120,11 @@ to it. The template already carries the whole mechanism; you supply three things
 3. **`{{AUDIO_FILENAME}}`** — the media file's name, referenced relatively, so
    keep the report in the same folder as the media.
 
+Captions render in the classic subtitle style — **yellow fill with a black
+outline** (外黑里黄), at a size meant to be read at a glance while listening.
+That styling is what keeps them legible over either theme, so leave it alone
+unless the user asks otherwise.
+
 Copy the media and transcript next to the report so the folder is
 self-contained and shareable as a unit. If there is no media file, delete the
 audio-sync block from the template and render timestamps as plain text.
@@ -220,6 +225,12 @@ representative sample yourself and say it's an estimate.
   verbatim. Match how the user talks to you.
 - **One self-contained HTML file.** No external CSS/JS/fonts/images — everything
   inline so it opens anywhere and can be shared. Use the provided template.
+- **Dark by default, with a ☀️/🌙 toggle.** The template ships both palettes as
+  CSS variables (`:root` dark, `:root[data-theme="light"]` light) and a
+  top-right toggle whose choice persists. Dark is the default because that is
+  how the user reads these. When you add new colours, define them as variables
+  and give them a light-theme value too — a hardcoded dark hex will break the
+  day mode.
 - **Tailor when you can, deliver regardless.** JD present → tailored fit. JD
   absent → still ship the full report.
 

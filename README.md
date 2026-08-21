@@ -26,6 +26,9 @@ A single self-contained HTML report (dark, responsive, no external assets) with 
 | 14–16 | Prepare / tactics / reverse questions | Story bank (STAR-L), quantified-wins table, in-the-moment tactics, tailored questions to ask back |
 | 17 | One-line verdict | Top-3 priority actions |
 
+**Dark by default, with a day mode.** A ☀️/🌙 toggle in the top-right switches between the dark palette and a light one, and remembers your choice.
+
+
 ### 🎧 Audio-synced playback (when you supply the recording)
 
 If you hand the skill the audio/video alongside the transcript, the report ships wired to it:
@@ -33,6 +36,7 @@ If you hand the skill the audio/video alongside the transcript, the report ships
 - **Every timestamp becomes a ▶ play button** — click any moment in the timeline, segment guide, or a quoted line and the built-in player jumps straight there. Reading "you hedged here" is one thing; hearing it is another.
 - **A live caption track with an on/off toggle** follows the audio as it plays, so you can read and listen at once. Captions are embedded in the HTML, so it all works offline by double-clicking the file.
 - Output is a **folder** holding the recording, the transcript, and the report together — share the folder and everything keeps working.
+- Captions use the classic subtitle look — **yellow with a black outline** — so they stay readable over either theme.
 
 
 ## Inputs
@@ -115,6 +119,9 @@ MIT — see [LICENSE](LICENSE).
 | 14–16 | 备战清单 / 临场战术 / 反问银行 | STAR-L 故事库、量化战绩表、临场行为修正、定制反问 |
 | 17 | 一句话总结 | 三条最高优先级行动 |
 
+**默认夜间模式，另配白天模式。** 右上角 ☀️/🌙 按钮一键切换深浅配色，选择会被记住。
+
+
 ### 🎧 音频联动（提供录音时自动启用）
 
 把录音和转录一起交给技能，报告会直接和音频挂上钩：
@@ -122,6 +129,7 @@ MIT — see [LICENSE](LICENSE).
 - **每个时间戳都是一个 ▶ 播放按钮**——时间线、逐段精读、引用原话，点哪里就从哪里开始播。看到「你这里犹豫了」和亲耳听到，感受完全不同。
 - **实时字幕 + 开关**，跟着音频滚动，可边听边读；字幕内嵌在 HTML 里，双击打开即可离线使用。
 - 输出是一个**文件夹**，录音、转录、报告三件套放在一起——整个文件夹分享出去，功能照常。
+- 字幕采用经典电视字幕样式——**外黑里黄**（黄字黑描边），在深色和浅色背景下都清晰。
 
 
 ## 输入
