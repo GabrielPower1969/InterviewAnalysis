@@ -34,7 +34,9 @@ what to fix, and how to prepare next time.
   - a **transcript**: `.srt` / `.vtt` (timestamps let you cite moments like
     `17:13`) or plain `.txt`; **or**
   - an **audio/video file** (`.mp3` / `.m4a` / `.wav` / `.mp4` …). Transcribe it
-    locally first — prefer `whisper` (or `whisper.cpp` / `ffmpeg` + whisper) if
+    locally first. If the user's own instructions (CLAUDE.md / AGENTS.md or a
+    house-rules file they point to) name a local transcription command, use
+    that; otherwise prefer `whisper` (or `whisper.cpp` / `ffmpeg` + whisper) if
     installed, outputting `.srt` so you keep timestamps; if no local
     transcription tool is available, tell the user and ask for a transcript
     export instead. Never upload the media to any external service.
@@ -56,6 +58,12 @@ Do not embed personal contact details (phone, email, address) from the CV into
 the report — use the candidate's name only.
 
 ## Workflow
+
+0. **House rules win.** If the user's instructions point to a house-rules
+   file for interview reports (archive path, naming, transcription command,
+   where CVs live), read it before anything else; where it differs from this
+   skill, follow it. Look for a CV where those rules say CVs live before
+   asking the user for one.
 
 1. **Read everything first.** Read the full transcript (chunk large files with
    `offset`/`limit` — SRTs are big). Read the JD and résumé if provided. Large
